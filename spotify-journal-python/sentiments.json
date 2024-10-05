@@ -1,0 +1,27 @@
+[
+  {
+    "entry": "i had a bad day",
+    "sentiment": -0.6999999999999998,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": "i had a good day",
+    "sentiment": 0.7,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": "horrible horrible day so stressful",
+    "sentiment": -1.0,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": "horrible horrible day so stressful",
+    "sentiment": -1.0,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": "i had a mid day",
+    "sentiment": 0.0,
+    "date": "2024-10-05"
+  }
+]

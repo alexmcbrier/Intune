@@ -9,23 +9,28 @@ from matplotlib.figure import Figure
 import io
 from flask import Response
 import random
-
-
-
+import os
 
 app = Flask(__name__)
 
-# In-memory storage for journal entries (later, you can use a database)
-journal_entries = []
+# Path to the JSON file
+JSON_FILE_PATH = 'sentiments.json'
 
-# Mock function for fetching a recommended playlist (Spotify integration goes here)
-def fetch_playlist():
-    pass
-    '''return [
-        {"title": "Song 1", "link": "#", "img": "https://via.placeholder.com/100"},
-        {"title": "Song 2", "link": "#", "img": "https://via.placeholder.com/100"},
-        {"title": "Song 3", "link": "#", "img": "https://via.placeholder.com/100"}
-    ]'''
+# Load existing journal entries from the JSON file
+def load_entries():
+    if os.path.exists(JSON_FILE_PATH):
+        with open(JSON_FILE_PATH, 'r') as file:
+            return json.load(file)
+    return []
+
+# Save journal entries to the JSON file
+def save_entries(entries):
+    with open(JSON_FILE_PATH, 'w') as file:
+        json.dump(entries, file, indent=2)
+
+# Load existing entries into memory
+journal_entries = load_entries()
+
 # Home route with journal form
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -37,12 +42,18 @@ def home():
         analysis = TextBlob(journal_entry)
         sentiment = analysis.sentiment.polarity
         
-        # Store the journal entry
-        journal_entries.append({
+        # Create a new journal entry
+        new_entry = {
             "entry": journal_entry,
             "sentiment": sentiment,
-            "date": date.today()  # Use the current date
-        })
+            "date": str(date.today())  # Use the current date as a string
+        }
+        
+        # Append the new entry to the existing journal entries
+        journal_entries.append(new_entry)
+
+        # Save the updated entries to the JSON file
+        save_entries(journal_entries)
         
         return render_template('home.html', sentiment=sentiment, journal_entries=journal_entries)
 
@@ -75,7 +86,5 @@ def create_figure():
     axis.plot(xs, ys)
     return fig
 
-
 if __name__ == '__main__':
     app.run(debug=True)
-
