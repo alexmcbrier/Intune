@@ -1,5 +1,26 @@
-{
-  "averageDanceability": "0.49",
-  "averageEnergy": "0.46",
-  "averageValence": "0.40"
-}
+[
+  {
+    "date": "2024-10-05",
+    "averageDanceability": "0.44",
+    "averageEnergy": "0.21",
+    "averageValence": "0.30"
+  },
+  {
+    "date": "2024-10-05",
+    "averageDanceability": "0.44",
+    "averageEnergy": "0.21",
+    "averageValence": "0.30"
+  },
+  {
+    "date": "2024-10-05",
+    "averageDanceability": "0.44",
+    "averageEnergy": "0.21",
+    "averageValence": "0.30"
+  },
+  {
+    "date": "2024-10-05",
+    "averageDanceability": "0.44",
+    "averageEnergy": "0.21",
+    "averageValence": "0.30"
+  }
+]

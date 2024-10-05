@@ -3,7 +3,7 @@ const express = require('express');
 const axios = require('axios');
 const querystring = require('querystring');
 const path = require('path');
-const fs = require('fs'); // Importing the fs module
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
@@ -14,11 +14,17 @@ const REDIRECT_URI = 'http://localhost:3000/callback';
 
 app.use(express.static(path.join(__dirname, 'public'))); 
 
+// Middleware to handle sessions (if needed)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// This route allows users to log in
 app.get('/login', (req, res) => {
     const scope = 'user-read-private user-read-email user-read-recently-played'; // Added user-read-recently-played scope
     res.redirect(`https://accounts.spotify.com/authorize?response_type=code&client_id=${CLIENT_ID}&scope=${encodeURIComponent(scope)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`);
 });
 
+// This route handles the Spotify callback
 app.get('/callback', async (req, res) => {
     const code = req.query.code;
 
@@ -109,14 +115,29 @@ app.get('/callback', async (req, res) => {
         const averageEnergy = (totalEnergy / recentlyPlayedTracks.length).toFixed(2);
         const averageValence = (totalValence / recentlyPlayedTracks.length).toFixed(2);
 
-        // Write the averages to averages.json
-        const averages = {
+        const currentDate = new Date().toISOString().split('T')[0]; // Get date in YYYY-MM-DD format
+        const newEntry = {
+            date: currentDate,
             averageDanceability,
             averageEnergy,
             averageValence,
         };
-        fs.writeFileSync('averages.json', JSON.stringify(averages, null, 2));
 
+        // Read existing entries from averages.json
+        const filePath = path.join(__dirname, 'averages.json');
+        let existingEntries = [];
+
+        if (fs.existsSync(filePath)) {
+            const data = fs.readFileSync(filePath, 'utf-8');
+            existingEntries = JSON.parse(data); // Parse existing data
+        }
+
+        // Append new entry to existing entries
+        existingEntries.push(newEntry);
+
+        // Write updated entries back to averages.json
+        fs.writeFileSync(filePath, JSON.stringify(existingEntries, null, 2));
+        
         // Send response
         res.send(`
             <h1>Welcome, ${username}!</h1>
@@ -140,6 +161,7 @@ app.get('/callback', async (req, res) => {
             <p>Average Danceability: ${averageDanceability}</p>
             <p>Average Energy: ${averageEnergy}</p>
             <p>Average Valence: ${averageValence}</p>
+            <a href="/logout">Logout</a> <!-- Logout link -->
         `); 
     } catch (error) {
         console.error('Error fetching user data:', error);
@@ -147,6 +169,8 @@ app.get('/callback', async (req, res) => {
     }
 });
 
+// Start the server
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+
