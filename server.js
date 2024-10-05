@@ -2,7 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const querystring = require('querystring');
-const path = require('path'); 
+const path = require('path');
+const fs = require('fs'); // Importing the fs module
+
 const app = express();
 const port = 3000;
 
@@ -21,6 +23,7 @@ app.get('/callback', async (req, res) => {
     const code = req.query.code;
 
     try {
+        // Get access token
         const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
             grant_type: 'authorization_code',
             code,
@@ -35,6 +38,7 @@ app.get('/callback', async (req, res) => {
 
         const accessToken = tokenResponse.data.access_token;
 
+        // Fetch user data
         const userResponse = await axios.get('https://api.spotify.com/v1/me', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -44,6 +48,8 @@ app.get('/callback', async (req, res) => {
         const username = userResponse.data.display_name; 
         const email = userResponse.data.email; 
         const profileImage = userResponse.data.images[0]?.url; 
+
+        // Fetch recently played tracks
         const recentlyPlayedResponse = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=20', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -56,6 +62,7 @@ app.get('/callback', async (req, res) => {
         let totalEnergy = 0;
         let totalValence = 0;
 
+        // Fetch details for each track
         const trackPromises = recentlyPlayedTracks.map(async (item) => {
             const track = item.track;
             const artistIds = track.artists.map(artist => artist.id);
@@ -97,10 +104,20 @@ app.get('/callback', async (req, res) => {
 
         const tracksWithDetails = await Promise.all(trackPromises);
 
+        // Calculate averages
         const averageDanceability = (totalDanceability / recentlyPlayedTracks.length).toFixed(2);
         const averageEnergy = (totalEnergy / recentlyPlayedTracks.length).toFixed(2);
         const averageValence = (totalValence / recentlyPlayedTracks.length).toFixed(2);
 
+        // Write the averages to averages.json
+        const averages = {
+            averageDanceability,
+            averageEnergy,
+            averageValence,
+        };
+        fs.writeFileSync('averages.json', JSON.stringify(averages, null, 2));
+
+        // Send response
         res.send(`
             <h1>Welcome, ${username}!</h1>
             <p>Email: ${email}</p>
