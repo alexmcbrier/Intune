@@ -30,3 +30,10 @@ button {
 button:hover {
     background-color: #1ed760;
 }
+.lexend-deca {
+    font-family: "Lexend Deca", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
