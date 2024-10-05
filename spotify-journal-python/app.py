@@ -3,6 +3,15 @@ from textblob import TextBlob
 import requests
 import json
 from datetime import date
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+import io
+from flask import Response
+import random
+
+
+
 
 app = Flask(__name__)
 
@@ -47,7 +56,26 @@ def journal_entries_page():
 # Route for showing sentiment graph
 @app.route('/sentiment')
 def sentiment_graph():
-    return render_template('sentiment_graph.html', entries=journal_entries)
+    return render_template('sentiment_graph.html', graph="")
+
+@app.route('/plot.png')
+def plot_png():
+    fig = create_figure()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
+def create_figure():
+    fig = Figure()
+    axis = fig.add_subplot(1, 1, 1)
+    xs = range(10)
+    #ys = [random.randint(1, 50) for x in xs]
+    ys = [2**x for x in xs[0:6]] + [2**-x for x in xs[6:11]]
+    axis.plot(xs, ys)
+    return fig
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+
