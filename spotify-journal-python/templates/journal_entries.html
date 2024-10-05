@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h2>Journal Entries</h2>
+    <ul>
+        {% for entry in entries %}
+            <li>{{ entry.date }} - {{ entry.sentiment }}: {{ entry.entry }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

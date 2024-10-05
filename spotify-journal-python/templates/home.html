@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h2>Write Your Journal Entry</h2>
+    <form action="/" method="post">
+        <textarea name="journalEntry" rows="10" placeholder="Write about your day..."></textarea>
+        <button type="submit">Submit Journal</button>
+    </form>
+
+    {% if sentiment %}
+        <p>Your sentiment is: <strong>{{ sentiment }}</strong></p>
+    {% endif %}
+
+    <p>{{journal_entries}}</p>
+
+    <!--{% if playlist %}
+        <h2>Recommended Playlist</h2>
+        <div id="playlist">
+            {% for song in playlist %}
+                <div class="playlist-item">
+                    <img src="{{ song.img }}" alt="{{ song.title }}">
+                    <a href="{{ song.link }}" target="_blank">{{ song.title }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}-->
+{% endblock %}
