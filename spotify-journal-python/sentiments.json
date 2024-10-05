@@ -1,37 +1,42 @@
 [
   {
-    "entry": "i had a bad day",
+    "entry": "I had a great day today, I worked on a hackathon with friends at the BU Spark mini hack.\r\n",
+    "sentiment": 0.8,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": "I had a bad day because I failed my test.",
+    "sentiment": -0.5999999999999999,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": "I had a bad day because I failed my test.",
+    "sentiment": -0.5999999999999999,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": " I had a fun day visiting my good riends at the amazing park in Boston",
+    "sentiment": 0.5333333333333333,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": "I had a terrible day because my pet goldfish died",
+    "sentiment": -1.0,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": "We had a great time eating breakfeast this morning at CDS!",
+    "sentiment": 1.0,
+    "date": "2024-10-05"
+  },
+  {
+    "entry": "I had a bad day today.",
     "sentiment": -0.6999999999999998,
     "date": "2024-10-05"
   },
   {
-    "entry": "i had a good day",
-    "sentiment": 0.7,
-    "date": "2024-10-05"
-  },
-  {
-    "entry": "horrible horrible day so stressful",
-    "sentiment": -1.0,
-    "date": "2024-10-05"
-  },
-  {
-    "entry": "horrible horrible day so stressful",
-    "sentiment": -1.0,
-    "date": "2024-10-05"
-  },
-  {
-    "entry": "i had a mid day",
-    "sentiment": 0.0,
-    "date": "2024-10-05"
-  },
-  {
-    "entry": "i feel good",
-    "sentiment": 0.7,
-    "date": "2024-10-05"
-  },
-  {
-    "entry": "",
-    "sentiment": 0.0,
+    "entry": "I had a great day today at the hackathon!",
+    "sentiment": 1.0,
     "date": "2024-10-05"
   }
 ]

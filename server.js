@@ -14,22 +14,20 @@ const REDIRECT_URI = 'http://localhost:3000/callback';
 
 app.use(express.static(path.join(__dirname, 'public'))); 
 
-// Middleware to handle sessions (if needed)
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// This route allows users to log in
 app.get('/login', (req, res) => {
-    const scope = 'user-read-private user-read-email user-read-recently-played'; // Added user-read-recently-played scope
+    const scope = 'user-read-private user-read-email user-read-recently-played'; 
     res.redirect(`https://accounts.spotify.com/authorize?response_type=code&client_id=${CLIENT_ID}&scope=${encodeURIComponent(scope)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`);
 });
 
-// This route handles the Spotify callback
 app.get('/callback', async (req, res) => {
     const code = req.query.code;
 
     try {
-        // Get access token
+
         const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
             grant_type: 'authorization_code',
             code,
@@ -44,7 +42,6 @@ app.get('/callback', async (req, res) => {
 
         const accessToken = tokenResponse.data.access_token;
 
-        // Fetch user data
         const userResponse = await axios.get('https://api.spotify.com/v1/me', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -55,7 +52,6 @@ app.get('/callback', async (req, res) => {
         const email = userResponse.data.email; 
         const profileImage = userResponse.data.images[0]?.url; 
 
-        // Fetch recently played tracks
         const recentlyPlayedResponse = await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=20', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -68,7 +64,6 @@ app.get('/callback', async (req, res) => {
         let totalEnergy = 0;
         let totalValence = 0;
 
-        // Fetch details for each track
         const trackPromises = recentlyPlayedTracks.map(async (item) => {
             const track = item.track;
             const artistIds = track.artists.map(artist => artist.id);
@@ -110,7 +105,6 @@ app.get('/callback', async (req, res) => {
 
         const tracksWithDetails = await Promise.all(trackPromises);
 
-        // Calculate averages
         const averageDanceability = (totalDanceability / recentlyPlayedTracks.length).toFixed(2);
         const averageEnergy = (totalEnergy / recentlyPlayedTracks.length).toFixed(2);
         const averageValence = (totalValence / recentlyPlayedTracks.length).toFixed(2);
@@ -123,7 +117,6 @@ app.get('/callback', async (req, res) => {
             averageValence,
         };
 
-        // Read existing entries from averages.json
         const filePath = path.join(__dirname, 'averages.json');
         let existingEntries = [];
 
@@ -132,13 +125,10 @@ app.get('/callback', async (req, res) => {
             existingEntries = JSON.parse(data); // Parse existing data
         }
 
-        // Append new entry to existing entries
         existingEntries.push(newEntry);
 
-        // Write updated entries back to averages.json
         fs.writeFileSync(filePath, JSON.stringify(existingEntries, null, 2));
         
-        // Send response
         res.send(`
             <h1>Welcome, ${username}!</h1>
             <p>Email: ${email}</p>
@@ -169,7 +159,6 @@ app.get('/callback', async (req, res) => {
     }
 });
 
-// Start the server
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });

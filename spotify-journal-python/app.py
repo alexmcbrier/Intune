@@ -55,7 +55,7 @@ def home():
         # Save the updated entries to the JSON file
         save_entries(journal_entries)
         
-        return render_template('home.html', sentiment=sentiment, journal_entries=journal_entries)
+        return render_template('home.html', sentiment=sentiment)
 
     return render_template('home.html', sentiment=sentiment)
 
@@ -78,13 +78,26 @@ def plot_png():
 
 
 def create_figure():
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
-    xs = range(10)
-    #ys = [random.randint(1, 50) for x in xs]
-    ys = [2**x for x in xs[0:6]] + [2**-x for x in xs[6:11]]
-    axis.plot(xs, ys)
-    return fig
+   fig = Figure()
+   axis = fig.add_subplot(1,1,1)
+
+  
+   f = open('sentiments.json')
+   valences = []
+   data = json.load(f)
+   for i in data:
+       valences.append(i["sentiment"])
+
+   print(valences)
+   ys = valences
+   ys = list(map(float, ys))
+   xs = range(len(valences))
+
+   axis.plot(xs, ys)
+   fig.supxlabel("Days")
+   fig.supylabel("Average Sentiment (0-1)")
+   return fig
 
 if __name__ == '__main__':
     app.run(debug=True)
+
